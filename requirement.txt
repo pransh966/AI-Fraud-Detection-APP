@@ -1,0 +1,37 @@
+fastapi
+uvicorn[standard]
+
+# Machine Learning
+scikit-learn
+lightgbm
+pandas
+numpy
+joblib
+shap
+
+# Database
+sqlalchemy
+psycopg2-binary
+alembic
+
+# Authentication
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+
+# Environment Variables
+python-dotenv
+pydantic-settings
+
+# Validation
+pydantic
+
+# File Upload
+aiofiles
+
+# CSV Handling
+openpyxl
+
+# Development
+pytest
+httpx
