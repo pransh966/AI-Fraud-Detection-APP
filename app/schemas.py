@@ -18,7 +18,7 @@ class User_Response(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Prediction_Request(BaseModel):
     data: dict
@@ -37,4 +37,13 @@ class User_History(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class token(BaseModel):
+    access_token:str
+    token_type:str
+
+class TokenData(BaseModel):
+    id: Optional[int] = None
+
+    
