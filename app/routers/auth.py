@@ -4,7 +4,35 @@ from sqlalchemy.orm import Session
 
 from .. import database, schemas, model, utils, oauth2
 
-router = APIRouter(tags=['Authentication'])
+router = APIRouter(prefix="/auth")
+
+
+@router.post("/register", response_model=schemas.UserResponse)
+def register(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
+
+    # Check if the email already exists
+    existing_user = db.query(model.User).filter(model.User.email == user.email).first()
+
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already exists"
+        )
+
+    user.password = utils.hash(user.password)
+
+
+    new_user = model.User(
+        username=user.username,
+        email=user.email,
+        password=user.password
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
 
 @router.post('/login', response_model=schemas.token)
 def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):

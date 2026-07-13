@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from xml.parsers.expat import model
+from . import model
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -38,6 +38,6 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
     token = verify_access_token(token, credentials_exception)
 
-    user = db.query(model.User).filter(model.User.id == token.id).first()
+    user = db.query(model.User).filter(model.User.id == token["user_id"]).first()
 
     return user
