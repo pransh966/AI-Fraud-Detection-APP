@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app import database, oauth2
+from ..database import get_db
+from ..ML.predictor import predict_transaction
+from .. import oauth2
 
 router = APIRouter(
     prefix="/predict",
@@ -11,9 +13,11 @@ router = APIRouter(
 
 @router.post("/")
 def predict(
-    current_user = Depends(oauth2.get_current_user),
-    db: Session = Depends(database.get_db)
+    transaction: dict,
+    db: Session = Depends(get_db),
+    current_user=Depends(oauth2.get_current_user)
 ):
-    return {
-        "message": "Prediction endpoint is working!"
-    }
+
+    result = predict_transaction(transaction)
+
+    return result
