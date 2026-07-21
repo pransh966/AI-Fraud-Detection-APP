@@ -16,3 +16,15 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
+class BatchPrediction(Base):
+    __tablename__ = "batch_predictions"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    filename = Column(String)
+    total_transactions = Column(Integer)
+    fraud_transactions = Column(Integer)
+    legitimate_transactions = Column(Integer)
+    average_probability = Column(Float)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    

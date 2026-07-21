@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, conint
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
+from pydantic import Field
 
 
 class User_Create(BaseModel):
@@ -59,3 +60,23 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
+class PredictionResponse(BaseModel):
+    prediction: int
+    label: str
+    probability: float
+    risk_level: str
+
+class PredictionRequest(BaseModel):
+    data: dict
+
+class BatchPredictionResponse(BaseModel):
+    batch_id: str
+    message: str
+    total_transactions: int
+    fraud_transactions: int
+    legitimate_transactions: int
+    average_fraud_probability: float
+    output_file: str
+    download_url: str
+    
