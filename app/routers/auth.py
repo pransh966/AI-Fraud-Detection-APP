@@ -53,3 +53,10 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
     access_token = oauth2.create_access_token(data={"user_id": user.id})
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/logout")
+def logout(current_user: schemas.UserResponse = Depends(oauth2.get_current_user)):
+    return {
+        "success": True,
+        "message": "Logout successful. Please remove the access token from the client."
+    }

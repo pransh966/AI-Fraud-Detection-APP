@@ -1,7 +1,12 @@
 from fastapi import FastAPI
-
 from app.database import Base, engine
-from app.routers import auth, predict
+from app.routers import auth, dashboard, history, predict, profile,batch_history
+from fastapi.exceptions import RequestValidationError
+from fastapi import HTTPException
+
+from app.routers.exceptions import http_exception_handler,validation_exception_handler,global_exception_handler
+
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -10,10 +15,28 @@ app = FastAPI(
     description="AI-powered Fraud Detection System using FastAPI and LightGBM"
 )
 
+app.include_router(history.router)
+app.include_router(batch_history.router)
+app.include_router(profile.router)
 app.include_router(auth.router)
 app.include_router(predict.router)
+app.include_router(dashboard.router)
+app.add_exception_handler(
+    HTTPException,
+    http_exception_handler
+)
 
+app.add_exception_handler(
+    RequestValidationError,
+    validation_exception_handler
+)
 
+app.add_exception_handler(
+    Exception,
+    global_exception_handler
+)
+
+ 
 @app.get("/")
 def root():
     return {
@@ -26,3 +49,4 @@ def health():
     return {
         "status": "healthy"
     }
+

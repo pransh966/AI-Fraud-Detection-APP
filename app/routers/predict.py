@@ -5,6 +5,8 @@ import os
 from ..database import get_db
 from ..ML.predictor import predict_transaction, predict_batch_transactions
 from .. import oauth2
+from .. import model
+
 
 router = APIRouter(
     prefix="/predict",
@@ -19,16 +21,45 @@ def predict(
     db: Session = Depends(get_db),
     current_user=Depends(oauth2.get_current_user)
 ):
-    return predict_transaction(request.data)
+    result = predict_transaction(request.data)
 
+    
+    history = model.PredictionHistory(
+        user_id=current_user.id,
+        transaction_data=request.data,
+        prediction=result["label"],
+        probability=result["probability"],
+        risk_level=result["risk_level"]
+    )
+
+    db.add(history)
+    db.commit()
+
+    return result
 
 @router.post("/batch", response_model=BatchPredictionResponse)
 def predict_batch(
     file: UploadFile = File(...),
+    db: Session = Depends(get_db),
     current_user=Depends(oauth2.get_current_user)
 ):
-    return predict_batch_transactions(file)
+    
+    result = predict_batch_transactions(file)
 
+    
+    batch = model.BatchPrediction(
+        user_id=current_user.id,
+        filename=result["output_file"],
+        total_transactions=result["total_transactions"],
+        fraud_transactions=result["fraud_transactions"],
+        legitimate_transactions=result["legitimate_transactions"],
+        average_probability=result["average_fraud_probability"]
+    )
+
+    db.add(batch)
+    db.commit()
+
+    return result
 
 @router.get("/download/{filename}")
 def download_file(

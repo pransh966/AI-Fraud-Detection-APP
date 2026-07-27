@@ -80,3 +80,38 @@ class BatchPredictionResponse(BaseModel):
     output_file: str
     download_url: str
     
+class ProfileResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+
+    class Config:
+        from_attributes = True
+
+class BatchHistoryResponse(BaseModel):
+    id: int
+    filename: str
+    total_transactions: int
+    fraud_transactions: int
+    legitimate_transactions: int
+    average_probability: float
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class HistoryResponse(BaseModel):
+    id: int
+    transaction_data: dict
+    prediction: str  
+    probability: float
+    risk_level: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class ProfileUpdate(BaseModel):
+    username: str
+    email: str | None = None
+
