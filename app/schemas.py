@@ -71,10 +71,12 @@ class PredictionResponse(BaseModel):
     label: str
     probability: float
     risk_level: str
+    threshold: float = 0.20
     top_factors: List[TopFactor] = []
 
 class PredictionRequest(BaseModel):
     data: dict
+    threshold: Optional[float] = None
 
 class BatchPredictionResponse(BaseModel):
     batch_id: str
@@ -85,8 +87,9 @@ class BatchPredictionResponse(BaseModel):
     average_fraud_probability: float
     output_file: str
     download_url: str
+    threshold: float = 0.20
     top_factors: List[TopFactor] = []
-    
+
     
 class ProfileResponse(BaseModel):
     id: int

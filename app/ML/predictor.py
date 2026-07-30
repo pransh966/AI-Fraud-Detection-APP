@@ -224,25 +224,33 @@ def prepare_features(df: pd.DataFrame) -> pd.DataFrame:
     return df[features]
 
 
-def predict_transaction(data: dict):
-    """Predict whether a transaction is fraudulent."""
+def predict_transaction(data: dict, threshold: float = None):
+    """Predict whether a transaction is fraudulent.
+
+    threshold: the decision cutoff on fraud probability (0.1-0.9). Lower
+    catches more fraud but raises more false alarms (higher recall, lower
+    precision); higher does the opposite. Defaults to FRAUD_THRESHOLD.
+    """
+
+    resolved_threshold = FRAUD_THRESHOLD if threshold is None else max(0.1, min(0.9, threshold))
 
     df = pd.DataFrame([data])
     X = prepare_features(df)
 
     probability = float(model.predict_proba(X)[0][1])
-    prediction = int(probability >= FRAUD_THRESHOLD)
+    prediction = int(probability >= resolved_threshold)
 
     return {
         "prediction": prediction,
         "label": "Fraud" if prediction else "Legitimate",
         "probability": round(probability, 4),
         "risk_level": get_risk_level(probability),
+        "threshold": resolved_threshold,
         "top_factors": explain_transaction(X),
     }
 
 
-def predict_batch_transactions(file):
+def predict_batch_transactions(file, threshold: float = None):
 
     # Read uploaded file
     if file.filename.endswith(".csv"):
@@ -259,8 +267,10 @@ def predict_batch_transactions(file):
 
     X = prepare_features(df)
 
+    resolved_threshold = FRAUD_THRESHOLD if threshold is None else max(0.1, min(0.9, threshold))
+
     probabilities = model.predict_proba(X)[:, 1]
-    predictions = (probabilities >= FRAUD_THRESHOLD).astype(int)
+    predictions = (probabilities >= resolved_threshold).astype(int)
 
     per_row_summaries, batch_top_factors = explain_batch(X)
 
@@ -294,5 +304,6 @@ def predict_batch_transactions(file):
         "average_fraud_probability": average_probability,
         "output_file": filename,
         "download_url": f"/predict/download/{filename}",
+        "threshold": resolved_threshold,
         "top_factors": batch_top_factors,
     }
