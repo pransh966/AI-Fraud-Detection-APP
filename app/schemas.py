@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, conint
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from pydantic import Field
 
 
@@ -60,12 +60,18 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class TopFactor(BaseModel):
+    feature: str
+    label: str
+    impact: str
+    weight: float
 
 class PredictionResponse(BaseModel):
     prediction: int
     label: str
     probability: float
     risk_level: str
+    top_factors: List[TopFactor] = []
 
 class PredictionRequest(BaseModel):
     data: dict
@@ -79,6 +85,8 @@ class BatchPredictionResponse(BaseModel):
     average_fraud_probability: float
     output_file: str
     download_url: str
+    top_factors: List[TopFactor] = []
+    
     
 class ProfileResponse(BaseModel):
     id: int

@@ -15,25 +15,26 @@ import Profile from "../pages/profile/Profile";
 
 import NotFound from "../pages/NotFound";
 
+import MainLayout from "../layouts/MainLayout";
+import ProtectedRoute from "./ProtectedRoute";
+
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
 
-        <Route path="/dashboard" element={<Dashboard />} />
-
-        <Route path="/predict" element={<Predict />} />
-
-        <Route path="/history" element={<History />} />
-
-        <Route path="/batch-predict" element={<BatchPredict />} />
-
-        <Route path="/batch-history" element={<BatchHistory />} />
-
-        <Route path="/profile" element={<Profile />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/predict" element={<Predict />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/batch-predict" element={<BatchPredict />} />
+            <Route path="/batch-history" element={<BatchHistory />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+        </Route>
 
         <Route path="*" element={<NotFound />} />
       </Routes>
