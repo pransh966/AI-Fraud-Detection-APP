@@ -8,6 +8,8 @@ import shap
 
 logger = logging.getLogger(__name__)
 
+FRAUD_THRESHOLD = 0.20
+
 model = joblib.load("app/ML/fraud_model.pkl")
 features = joblib.load("app/ML/features.pkl")
 
@@ -77,9 +79,9 @@ EXPLAINABLE_FEATURES = {
 
 
 def get_risk_level(probability: float) -> str:
-    if probability >= 0.2:
+    if probability >= 0.25:
         return "High"
-    elif probability >= 0.01:
+    elif probability >= 0.15:
         return "Medium"
     else:
         return "Low"
@@ -228,8 +230,8 @@ def predict_transaction(data: dict):
     df = pd.DataFrame([data])
     X = prepare_features(df)
 
-    prediction = int(model.predict(X)[0])
     probability = float(model.predict_proba(X)[0][1])
+    prediction = int(probability >= FRAUD_THRESHOLD)
 
     return {
         "prediction": prediction,
@@ -257,8 +259,8 @@ def predict_batch_transactions(file):
 
     X = prepare_features(df)
 
-    predictions = model.predict(X)
     probabilities = model.predict_proba(X)[:, 1]
+    predictions = (probabilities >= FRAUD_THRESHOLD).astype(int)
 
     per_row_summaries, batch_top_factors = explain_batch(X)
 
