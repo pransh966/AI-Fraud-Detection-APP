@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { LuShieldHalf } from "react-icons/lu";
+import { LuShieldHalf, LuLoaderCircle, LuArrowRight } from "react-icons/lu";
 import { loginUser } from "../../services/authService";
 import useAuth from "../../hooks/useAuth";
 
@@ -35,24 +35,33 @@ function Login() {
 
   return (
     <div
-      className="min-h-screen flex justify-center items-center px-4"
+      className="min-h-screen flex justify-center items-center px-4 relative overflow-hidden"
       style={{ background: "var(--bg)" }}
     >
       <div
-        className="w-full max-w-md rounded-2xl border p-9"
-        style={{ background: "var(--surface)", borderColor: "var(--border)" }}
+        className="absolute -top-32 -left-24 w-96 h-96 rounded-full blur-3xl opacity-25 animate-blob"
+        style={{ background: "radial-gradient(circle, #3E63DD, transparent 70%)" }}
+      />
+      <div
+        className="absolute -bottom-32 -right-24 w-96 h-96 rounded-full blur-3xl opacity-20 animate-blob-slow"
+        style={{ background: "radial-gradient(circle, #9b51e0, transparent 70%)" }}
+      />
+
+      <div
+        className="page-enter relative w-full max-w-md rounded-2xl border p-9"
+        style={{ background: "var(--surface)", borderColor: "var(--border)", boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}
       >
         <div className="flex items-center gap-2.5 justify-center mb-1">
-          <LuShieldHalf size={26} style={{ color: "var(--accent)" }} />
+          <LuShieldHalf size={26} className="icon-pop" style={{ color: "var(--accent)" }} />
           <span className="font-display font-semibold text-lg tracking-tight">
-            Sentinel<span style={{ color: "var(--accent)" }}>AI</span>
+            Sentinel<span className="gradient-text">AI</span>
           </span>
         </div>
         <p className="text-center text-sm mb-8" style={{ color: "var(--text-dim)" }}>
           Sign in to your fraud detection console
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 stagger">
           <div>
             <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-dim)" }}>
               Email
@@ -92,10 +101,14 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-lg font-semibold text-sm transition-opacity disabled:opacity-60"
-            style={{ background: "var(--accent)", color: "#ffffff" }}
+            className="btn-gradient w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm disabled:opacity-60"
+            style={{ color: "#ffffff" }}
           >
-            {loading ? "Signing in…" : "Sign in"}
+            {loading ? (
+              <><LuLoaderCircle className="animate-spin" size={16} /> Signing in…</>
+            ) : (
+              <>Sign in <LuArrowRight size={15} /></>
+            )}
           </button>
         </form>
 

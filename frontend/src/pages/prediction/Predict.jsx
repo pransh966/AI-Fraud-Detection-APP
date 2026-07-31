@@ -5,6 +5,7 @@ import {
   LuIndianRupee,
   LuShieldCheck,
   LuCircleAlert,
+  LuSparkles,
 } from "react-icons/lu";
 import { predictTransaction } from "../../services/predictionService";
 import RiskBadge from "../../components/RiskBadge";
@@ -64,7 +65,7 @@ const inputStyle = {
 };
 
 const inputClass =
-  "w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors focus:border-[color:var(--accent)]";
+  "w-full px-3 py-2 rounded-lg border text-sm outline-none transition-all duration-200 focus:border-[color:var(--accent)] focus:shadow-[0_0_0_3px_var(--accent-soft)]";
 
 function Predict() {
   const [form, setForm] = useState(initialForm);
@@ -104,9 +105,29 @@ function Predict() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="font-display text-2xl font-semibold">Predict</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--text-dim)" }}>
+      <div
+        className="relative rounded-2xl border p-6 sm:p-8 overflow-hidden mb-6"
+        style={{ borderColor: "var(--border)" }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(62,99,221,0.22) 0%, rgba(155,81,224,0.15) 45%, rgba(62,99,221,0.04) 100%)",
+          }}
+        />
+        <div
+          className="absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl opacity-25 animate-blob-slow"
+          style={{ background: "radial-gradient(circle, #3E63DD, transparent 70%)" }}
+        />
+        <div className="relative flex items-center gap-2 mb-2">
+          <LuSparkles size={16} style={{ color: "var(--accent)" }} />
+          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--accent)" }}>
+            Single transaction
+          </span>
+        </div>
+        <h1 className="relative font-display text-2xl sm:text-3xl font-bold">Predict</h1>
+        <p className="relative text-sm mt-1.5" style={{ color: "var(--text-dim)" }}>
           Run a single transaction through the fraud model and get an instant risk verdict.
         </p>
       </div>
@@ -273,8 +294,8 @@ function Predict() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-colors disabled:opacity-60"
-            style={{ background: "var(--accent)", color: "#ffffff" }}
+            className="btn-gradient w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm disabled:opacity-60"
+            style={{ color: "#ffffff" }}
           >
             {loading ? (
               <><LuLoaderCircle className="animate-spin" size={16} /> Scanning…</>
@@ -285,7 +306,7 @@ function Predict() {
         </form>
 
         <div
-          className="lg:col-span-2 rounded-xl border p-6 h-fit lg:sticky lg:top-8"
+          className="hover-lift lg:col-span-2 rounded-xl border p-6 h-fit lg:sticky lg:top-8"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}
         >
           <h3 className="text-xs font-semibold uppercase tracking-wider mb-5" style={{ color: "var(--text-dim)" }}>
@@ -295,7 +316,7 @@ function Predict() {
           {!result && !loading && (
             <div className="flex flex-col items-center text-center py-10">
               <div
-                className="w-12 h-12 rounded-full flex items-center justify-center mb-4"
+                className="w-12 h-12 rounded-full flex items-center justify-center mb-4 pulse-ring"
                 style={{ background: "var(--accent-soft)" }}
               >
                 <LuScanSearch size={20} style={{ color: "var(--accent)" }} />
@@ -316,7 +337,7 @@ function Predict() {
           )}
 
           {result && (
-            <div className="space-y-5">
+            <div className="space-y-5 page-enter">
               <div
                 className="flex items-center gap-3 px-4 py-3.5 rounded-lg"
                 style={{

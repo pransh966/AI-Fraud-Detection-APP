@@ -9,9 +9,9 @@ function RiskBadge({ level }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs font-mono font-medium uppercase tracking-wide ${style}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs font-mono font-medium uppercase tracking-wide transition-transform duration-150 hover:scale-105 ${style}`}
     >
-      <span className="w-1.5 h-1.5 rounded-full bg-current" />
+      <span className={`w-1.5 h-1.5 rounded-full bg-current ${level === "High" ? "pulse-ring" : ""}`} />
       {level || "Unknown"}
     </span>
   );

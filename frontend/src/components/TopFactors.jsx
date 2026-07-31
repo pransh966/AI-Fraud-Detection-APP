@@ -35,7 +35,7 @@ function TopFactors({ factors }) {
                 style={{ background: "var(--border)" }}
               >
                 <div
-                  className="h-full rounded-full"
+                  className="h-full rounded-full transition-[width] duration-700 ease-out"
                   style={{ width: `${pct}%`, background: color }}
                 />
               </div>

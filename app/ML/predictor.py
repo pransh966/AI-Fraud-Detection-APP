@@ -136,9 +136,7 @@ def explain_batch(X: pd.DataFrame, top_n_per_row: int = 3, top_n_overall: int = 
         agg = np.zeros((shap_values.shape[0], len(_UNIQUE_COLUMNS)))
         for j, col in enumerate(_UNIQUE_COLUMNS):
             agg[:, j] = shap_values[:, _COLUMN_INDICES[col]].sum(axis=1)
-
-        # Which original columns were actually provided (non-null, and not
-        # our "missing" categorical placeholder) in X, per row.
+            
         provided = np.zeros((X.shape[0], len(_UNIQUE_COLUMNS)), dtype=bool)
         for j, col in enumerate(_UNIQUE_COLUMNS):
             if col not in X.columns:
@@ -198,9 +196,6 @@ def prepare_features(df: pd.DataFrame) -> pd.DataFrame:
     df["hour"] = (df["TransactionDT"] // 3600) % 24
     df["TransactionAmt_log"] = np.log1p(df["TransactionAmt"])
 
-    # card1 may be missing entirely from a single-prediction payload (the
-    # Predict form doesn't require every field). Previously this raised a
-    # bare KeyError; now it degrades gracefully to "no card1 info available".
     if "card1" in df.columns:
         df["card1_freq"] = df["card1"].map(card1_freq).fillna(0)
         df["card1_count"] = df["card1"].map(card1_count).fillna(0)
