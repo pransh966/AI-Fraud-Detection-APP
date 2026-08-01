@@ -13,11 +13,10 @@ FRAUD_THRESHOLD = 0.20
 model = joblib.load("app/ML/fraud_model.pkl")
 features = joblib.load("app/ML/features.pkl")
 
-train = pd.read_csv("data/train_transaction.csv")
-
-card1_freq = train["card1"].value_counts().to_dict()
-card1_count = train.groupby("card1")["TransactionAmt"].count().to_dict()
-card1_mean = train.groupby("card1")["TransactionAmt"].mean().to_dict()
+_card1_stats = joblib.load("app/ML/card1_stats.pkl")
+card1_freq = _card1_stats["card1_freq"]
+card1_count = _card1_stats["card1_count"]
+card1_mean = _card1_stats["card1_mean"]
 
 # SHAP explainability setup
 _preprocessor = model.named_steps["preprocessor"]
