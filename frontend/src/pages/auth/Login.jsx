@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { LuShieldHalf, LuLoaderCircle, LuArrowRight } from "react-icons/lu";
+import { LuShieldHalf, LuLoaderCircle, LuArrowRight,  LuEye, LuEyeOff } from "react-icons/lu";
 import { loginUser } from "../../services/authService";
 import useAuth from "../../hooks/useAuth";
 
@@ -13,6 +13,7 @@ function Login() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,7 +70,7 @@ function Login() {
             <input
               type="email"
               placeholder="jane@company.com"
-              className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none focus:border-[color:var(--accent)] transition-colors"
+              className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none focus:border-(--accent) transition-colors"
               style={{ background: "var(--surface-2)", borderColor: "var(--border)", color: "var(--text)" }}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -81,15 +82,26 @@ function Login() {
             <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-dim)" }}>
               Password
             </label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 rounded-lg border text-sm outline-none focus:border-[color:var(--accent)] transition-colors"
-              style={{ background: "var(--surface-2)", borderColor: "var(--border)", color: "var(--text)" }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="w-full px-3.5 py-2.5 pr-10 rounded-lg border text-sm outline-none focus:border-(--accent) transition-colors"
+                style={{ background: "var(--surface-2)", borderColor: "var(--border)", color: "var(--text)" }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((s) => !s)}
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+                style={{ color: "var(--text-dim)" }}
+                tabIndex={-1}
+              >
+                {showPassword ? <LuEyeOff size={16} /> : <LuEye size={16} />}
+              </button>
+            </div>
           </div>
 
           {error && (
